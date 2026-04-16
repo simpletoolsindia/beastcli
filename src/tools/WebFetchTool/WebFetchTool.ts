@@ -33,6 +33,101 @@ async function scrapeWithFirecrawl(url: string): Promise<{ markdown: string; byt
   return { markdown, bytes: Buffer.byteLength(markdown) }
 }
 
+// Crawl4AI fallback - can use local Python server or API
+function isCrawl4aiEnabled(): boolean {
+  return Boolean(process.env.CRAWL4AI_API_URL)
+}
+
+async function scrapeWithCrawl4ai(url: string): Promise<{ markdown: string; bytes: number }> {
+  const apiUrl = process.env.CRAWL4AI_API_URL || 'http://localhost:8000'
+  try {
+    const response = await fetch(`${apiUrl}/crawl`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ urls: [url], prompt: 'Extract all main content as markdown' }),
+      signal: AbortSignal.timeout(30000),
+    })
+    if (response.ok) {
+      const data = await response.json() as { results?: Array<{ markdown?: string }> }
+      const markdown = data.results?.[0]?.markdown ?? ''
+      return { markdown, bytes: Buffer.byteLength(markdown) }
+    }
+  } catch {
+    // Crawl4AI not available, will use other fallback
+  }
+  throw new Error('Crawl4AI not available')
+}
+
+// Try multiple scrapers in order with fallbacks
+async function scrapeWithFallbacks(url: string): Promise<{ markdown: string; bytes: number }> {
+  // 1. Try Firecrawl first if available
+  if (isFirecrawlEnabled()) {
+    try {
+      return await scrapeWithFirecrawl(url)
+    } catch {
+      // Firecrawl failed, try next
+    }
+  }
+
+  // 2. Try Crawl4AI as second fallback
+  if (isCrawl4aiEnabled()) {
+    try {
+      return await scrapeWithCrawl4ai(url)
+    } catch {
+      // Crawl4AI failed, try next
+    }
+  }
+
+  // 3. Fall back to basic fetch (native method)
+  const response = await fetch(url, {
+    signal: AbortSignal.timeout,
+  })
+  const html = await response.text()
+
+  // Simple HTML to markdown conversion
+  const markdown = htmlToMarkdown(html)
+  return { markdown, bytes: Buffer.byteLength(markdown) }
+}
+
+function htmlToMarkdown(html: string): string {
+  // Basic HTML to markdown conversion
+  let text = html
+    // Remove scripts and styles
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    // Convert headings
+    .replace(/<h1[^>]*>([\s\S]*?)<\/h1>/gi, '# $1\n')
+    .replace(/<h2[^>]*>([\s\S]*?)<\/h2>/gi, '## $1\n')
+    .replace(/<h3[^>]*>([\s\S]*?)<\/h3>/gi, '### $1\n')
+    .replace(/<h4[^>]*>([\s\S]*?)<\/h4>/gi, '#### $1\n')
+    // Convert paragraphs
+    .replace(/<p[^>]*>([\s\S]*?)<\/p>/gi, '$1\n\n')
+    // Convert links
+    .replace(/<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/gi, '[$2]($1)')
+    // Convert bold/italic
+    .replace(/<strong[^>]*>([\s\S]*?)<\/strong>/gi, '**$1**')
+    .replace(/<b[^>]*>([\s\S]*?)<\/b>/gi, '**$1**')
+    .replace(/<em[^>]*>([\s\S]*?)<\/em>/gi, '*$1*')
+    .replace(/<i[^>]*>([\s\S]*?)<\/i>/gi, '*$1*')
+    // Convert lists
+    .replace(/<li[^>]*>([\s\S]*?)<\/li>/gi, '- $1\n')
+    // Convert code blocks
+    .replace(/<pre[^>]*>([\s\S]*?)<\/pre>/gi, '```\n$1\n```\n')
+    .replace(/<code[^>]*>([\s\S]*?)<\/code>/gi, '`$1`')
+    // Remove remaining HTML tags
+    .replace(/<[^>]+>/g, '')
+    // Decode HTML entities
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&')
+    // Clean up whitespace
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+
+  return text
+}
+
 const inputSchema = lazySchema(() =>
   z.strictObject({
     url: z.string().url().describe('The URL to fetch content from'),

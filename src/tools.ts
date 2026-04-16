@@ -154,6 +154,17 @@ import { timestampTool } from './tools/NativeTools/TimestampTool.js'
 import { urlTool } from './tools/NativeTools/URLTool.js'
 import { hashTool } from './tools/NativeTools/HashTool.js'
 import { textDiffTool } from './tools/NativeTools/TextDiffTool.js'
+import { weatherTool } from './tools/NativeTools/WeatherTool.js'
+import { currencyTool } from './tools/NativeTools/CurrencyTool.js'
+import { qrCodeTool } from './tools/NativeTools/QRCodeTool.js'
+import { timezoneTool } from './tools/NativeTools/TimezoneTool.js'
+import { regexTool } from './tools/NativeTools/RegexTool.js'
+import { passwordTool } from './tools/NativeTools/PasswordTool.js'
+import { newsTool } from './tools/NativeTools/NewsTool.js'
+import { ipLookupTool } from './tools/NativeTools/IPLookupTool.js'
+import { loremTool } from './tools/NativeTools/LoremTool.js'
+import { textStatsTool } from './tools/NativeTools/TextStatsTool.js'
+import { cronParserTool } from './tools/NativeTools/CronParserTool.js'
 
 /**
  * Predefined tool presets that can be used with --tools flag
@@ -255,6 +266,17 @@ export function getAllBaseTools(): Tools {
     urlTool,
     hashTool,
     textDiffTool,
+    weatherTool,
+    currencyTool,
+    qrCodeTool,
+    timezoneTool,
+    regexTool,
+    passwordTool,
+    newsTool,
+    ipLookupTool,
+    loremTool,
+    textStatsTool,
+    cronParserTool,
   ]
 }
 
