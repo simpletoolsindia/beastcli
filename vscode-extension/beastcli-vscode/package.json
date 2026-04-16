@@ -1,0 +1,181 @@
+{
+  "name": "beastcli-vscode",
+  "displayName": "BeastCLI",
+  "description": "Practical VS Code companion for BeastCLI with project-aware launch behavior and a real Control Center.",
+  "version": "1.0.0",
+  "publisher": "simpletoolsindia",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Themes",
+    "Other"
+  ],
+  "activationEvents": [
+    "onStartupFinished",
+    "onCommand:beastcli.start",
+    "onCommand:beastcli.startInWorkspaceRoot",
+    "onCommand:beastcli.openDocs",
+    "onCommand:beastcli.openSetupDocs",
+    "onCommand:beastcli.openWorkspaceProfile",
+    "onCommand:beastcli.openControlCenter",
+    "onCommand:beastcli.newChat",
+    "onCommand:beastcli.openChat",
+    "onCommand:beastcli.resumeSession",
+    "onCommand:beastcli.abortChat",
+    "onView:beastcli.controlCenter",
+    "onView:beastcli.chat"
+  ],
+  "main": "./src/extension.js",
+  "files": [
+    "README.md",
+    "media/**",
+    "src/extension.js",
+    "src/presentation.js",
+    "src/state.js",
+    "src/chat/**",
+    "themes/**"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "beastcli.start",
+        "title": "BeastCLI: Launch in Terminal",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.startInWorkspaceRoot",
+        "title": "BeastCLI: Launch in Workspace Root",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.openDocs",
+        "title": "BeastCLI: Open Repository",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.openSetupDocs",
+        "title": "BeastCLI: Open Setup Guide",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.openWorkspaceProfile",
+        "title": "BeastCLI: Open Workspace Profile",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.openControlCenter",
+        "title": "BeastCLI: Open Control Center",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.newChat",
+        "title": "BeastCLI: New Chat",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.openChat",
+        "title": "BeastCLI: Open Chat Panel",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.resumeSession",
+        "title": "BeastCLI: Resume Session",
+        "category": "BeastCLI"
+      },
+      {
+        "command": "beastcli.abortChat",
+        "title": "BeastCLI: Abort Generation",
+        "category": "BeastCLI"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "beastcli",
+          "title": "BeastCLI",
+          "icon": "media/beastcli.svg"
+        }
+      ]
+    },
+    "views": {
+      "beastcli": [
+        {
+          "id": "beastcli.chat",
+          "name": "Chat",
+          "type": "webview"
+        },
+        {
+          "id": "beastcli.controlCenter",
+          "name": "Control Center",
+          "type": "webview"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "beastcli.openChat",
+        "key": "ctrl+shift+l",
+        "mac": "cmd+shift+l"
+      }
+    ],
+    "configuration": {
+      "title": "BeastCLI",
+      "properties": {
+        "beastcli.launchCommand": {
+          "type": "string",
+          "default": "beastcli",
+          "description": "Command run in the integrated terminal when launching BeastCLI."
+        },
+        "beastcli.terminalName": {
+          "type": "string",
+          "default": "BeastCLI",
+          "description": "Integrated terminal tab name for BeastCLI sessions."
+        },
+        "beastcli.useOpenAIShim": {
+          "type": "boolean",
+          "default": false,
+          "description": "Optionally set CLAUDE_CODE_USE_OPENAI=1 in launched BeastCLI terminals."
+        },
+        "beastcli.permissionMode": {
+          "type": "string",
+          "default": "acceptEdits",
+          "enum": ["default", "acceptEdits", "bypassPermissions", "plan"],
+          "enumDescriptions": [
+            "Prompt for permission on each tool use (requires manual approval)",
+            "Auto-approve file edits, prompt for other operations (recommended)",
+            "Auto-approve all operations without prompting",
+            "Read-only mode — no file modifications allowed"
+          ],
+          "description": "Permission mode for chat sessions. Controls which tool operations are auto-approved."
+        }
+      }
+    },
+    "themes": [
+      {
+        "label": "BeastCLI Terminal Black",
+        "uiTheme": "vs-dark",
+        "path": "./themes/BeastCLI-Terminal-Black.json"
+      }
+    ]
+  },
+  "scripts": {
+    "test": "node --test ./src/*.test.js",
+    "lint": "node scripts/lint.js",
+    "package": "npx @vscode/vsce package --no-dependencies"
+  },
+  "keywords": [
+    "beastcli",
+    "terminal",
+    "theme",
+    "cli",
+    "llm",
+    "nvidia",
+    "openrouter"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/simpletoolsindia/beastcli"
+  },
+  "license": "MIT"
+}
