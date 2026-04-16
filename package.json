@@ -1,6 +1,6 @@
 {
   "name": "@simpletoolsindia/beastcli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "BeastCLI - AI-powered coding agent with NVIDIA NIM, OpenRouter, and multi-provider support (OpenAI, Gemini, Ollama, Claude, and 200+ models)",
   "type": "module",
   "bin": {
