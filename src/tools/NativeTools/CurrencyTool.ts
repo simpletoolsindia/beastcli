@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const currencyTool = buildTool({
+  shouldDefer: true,
   name: 'Currency',
   description: 'Convert between currencies using live exchange rates. No API key required - uses frankfurter.app free API.',
   input: z.object({

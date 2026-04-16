@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const colorConverterTool = buildTool({
+  shouldDefer: true,
   name: 'ColorConverter',
   description: 'Convert colors between HEX, RGB, HSL, and other formats. Useful for CSS styling, design systems, and color manipulation.',
   input: z.object({

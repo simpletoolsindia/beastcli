@@ -60,6 +60,11 @@ import {
   normalizeToolArguments,
   hasToolFieldMapping,
 } from './toolArgumentNormalization.js'
+import {
+  nvidiaRateTracker,
+  getNvidiaWaitTime,
+  recordNvidiaRequest,
+} from '../../utils/rateLimiting.js'
 
 type SecretValueSource = Partial<{
   OPENAI_API_KEY: string
@@ -1431,9 +1436,20 @@ class OpenAIShimMessages {
 
     const maxAttempts = isGithub ? GITHUB_429_MAX_RETRIES : 1
     let response: Response | undefined
+
+    // NVIDIA rate limiting - check before request
+    const isNvidia = request.baseUrl.includes('nvidia') || request.baseUrl.includes('integrate.api.nvidia')
+    const nvidiaDelay = isNvidia ? getNvidiaWaitTime() : 0
+    if (nvidiaDelay > 0) {
+      logForDebugging(`[NVIDIA] Rate limit: waiting ${nvidiaDelay}ms before request`)
+      await sleepMs(nvidiaDelay)
+    }
+
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       response = await fetchWithProxyRetry(chatCompletionsUrl, fetchInit)
       if (response.ok) {
+        // Record successful request for NVIDIA rate tracking
+        if (isNvidia) recordNvidiaRequest()
         return response
       }
       if (
@@ -1446,6 +1462,14 @@ class OpenAIShimMessages {
           GITHUB_429_BASE_DELAY_SEC * 2 ** attempt,
           GITHUB_429_MAX_DELAY_SEC,
         )
+        await sleepMs(delaySec * 1000)
+        continue
+      }
+      // NVIDIA 429 handling with exponential backoff
+      if (isNvidia && response.status === 429 && attempt < maxAttempts - 1) {
+        await response.text().catch(() => {})
+        const delaySec = Math.min(2 ** attempt * 2, 60) // 2s, 4s, 8s... max 60s
+        logForDebugging(`[NVIDIA] Rate limit hit: retrying in ${delaySec}s`)
         await sleepMs(delaySec * 1000)
         continue
       }

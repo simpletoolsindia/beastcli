@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const hashTool = buildTool({
+  shouldDefer: true,
   name: 'Hash',
   description: 'Generate cryptographic hashes (MD5, SHA1, SHA256, SHA512). Useful for checksums, password hashing comparisons, and data verification. No API key required.',
   input: z.object({

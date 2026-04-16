@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const timestampTool = buildTool({
+  shouldDefer: true,
   name: 'Timestamp',
   description: 'Convert between Unix timestamps and human-readable dates. Useful for API debugging, log analysis, and data conversion. No API key required.',
   input: z.object({

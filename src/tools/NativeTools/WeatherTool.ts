@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const weatherTool = buildTool({
+  shouldDefer: true,
   name: 'Weather',
   description: 'Get current weather, forecasts, and weather information for any location. Uses wttr.in - no API key required.',
   input: z.object({

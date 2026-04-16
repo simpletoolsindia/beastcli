@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const textStatsTool = buildTool({
+  shouldDefer: true,
   name: 'TextStats',
   description: 'Analyze text statistics: word count, character count, line count, reading time, sentence count, and more. No API key required.',
   input: z.object({

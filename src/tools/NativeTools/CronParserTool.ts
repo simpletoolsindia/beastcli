@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const cronParserTool = buildTool({
+  shouldDefer: true,
   name: 'Cron',
   description: 'Parse, validate, and explain cron expressions. Convert cron to human-readable format and calculate next run times. No API key required.',
   input: z.object({

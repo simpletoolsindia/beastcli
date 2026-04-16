@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const base64Tool = buildTool({
+  shouldDefer: true,
   name: 'Base64',
   description: 'Encode or decode Base64 strings. Useful for data encoding, API authentication, and binary-to-text conversion. No API key required.',
   input: z.object({

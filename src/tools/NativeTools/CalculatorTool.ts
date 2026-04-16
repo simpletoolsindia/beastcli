@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const calculatorTool = buildTool({
+  shouldDefer: true,
   name: 'Calculator',
   description: 'Perform mathematical calculations. Supports basic operations, advanced math functions, and unit conversions. No API key required.',
   input: z.object({

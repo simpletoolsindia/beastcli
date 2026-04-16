@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const urlTool = buildTool({
+  shouldDefer: true,
   name: 'URL',
   description: 'Encode, decode, parse, and manipulate URLs. Useful for URL cleaning, API work, and web development. No API key required.',
   input: z.object({

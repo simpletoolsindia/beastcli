@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const passwordTool = buildTool({
+  shouldDefer: true,
   name: 'Password',
   description: 'Generate secure passwords, passphrases, and random strings. Useful for creating credentials, API keys, and secure tokens. No API key required.',
   input: z.object({

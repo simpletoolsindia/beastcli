@@ -12,6 +12,7 @@ import { exec } from '../../utils/Shell.js'
 import type { ExecResult } from '../../utils/ShellCommand.js'
 
 export const youTubeTranscriptTool = buildTool({
+  shouldDefer: true,
   name: 'YouTubeTranscript',
   description: 'Get transcripts/subtitles from YouTube videos. No API key required - uses youtube-transcript-api or YTSage Python libraries.',
   input: z.object({

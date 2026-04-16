@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const timezoneTool = buildTool({
+  shouldDefer: true,
   name: 'Timezone',
   description: 'Convert times between timezones, get current time in multiple cities, and find timezone offsets. No API key required.',
   input: z.object({

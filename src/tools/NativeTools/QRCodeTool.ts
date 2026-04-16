@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const qrCodeTool = buildTool({
+  shouldDefer: true,
   name: 'QRCode',
   description: 'Generate QR codes for URLs, text, WiFi, contacts, and more. No API key required.',
   input: z.object({

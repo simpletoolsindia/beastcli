@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const jsonFormatterTool = buildTool({
+  shouldDefer: true,
   name: 'JsonFormatter',
   description: 'Format, validate, or minify JSON. Useful for cleaning up messy JSON, validating structure, or compressing JSON for storage.',
   input: z.object({

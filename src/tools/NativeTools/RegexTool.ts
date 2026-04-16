@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const regexTool = buildTool({
+  shouldDefer: true,
   name: 'Regex',
   description: 'Test regular expressions against text, validate patterns, and extract matches. No API key required.',
   input: z.object({

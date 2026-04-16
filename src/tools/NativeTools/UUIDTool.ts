@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const uuidTool = buildTool({
+  shouldDefer: true,
   name: 'UUID',
   description: 'Generate UUIDs (v1, v4, v7) and validate existing UUIDs. Useful for creating unique identifiers, testing, and data modeling. No API key required.',
   input: z.object({

@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const newsTool = buildTool({
+  shouldDefer: true,
   name: 'News',
   description: 'Get latest news headlines and articles. Uses public RSS feeds and free APIs - no API key required.',
   input: z.object({

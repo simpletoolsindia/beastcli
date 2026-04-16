@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const textDiffTool = buildTool({
+  shouldDefer: true,
   name: 'TextDiff',
   description: 'Compare two texts and highlight differences. Useful for code review, document comparison, and change tracking. No API key required.',
   input: z.object({

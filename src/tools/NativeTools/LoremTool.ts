@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const loremTool = buildTool({
+  shouldDefer: true,
   name: 'Lorem',
   description: 'Generate lorem ipsum placeholder text, random words, sentences, or paragraphs. Useful for templates, mockups, and testing. No API key required.',
   input: z.object({

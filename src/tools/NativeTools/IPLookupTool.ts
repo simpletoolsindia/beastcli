@@ -7,6 +7,7 @@ import { buildTool } from '../../Tool.js'
 import { z } from 'zod'
 
 export const ipLookupTool = buildTool({
+  shouldDefer: true,
   name: 'IPLookup',
   description: 'Look up IP address information including geolocation, ISP, hostname, and network details. No API key required.',
   input: z.object({
