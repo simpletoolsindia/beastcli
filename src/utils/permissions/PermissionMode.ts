@@ -42,52 +42,67 @@ type PermissionModeConfig = {
 const PERMISSION_MODE_CONFIG: Partial<
   Record<PermissionMode, PermissionModeConfig>
 > = {
-  default: {
-    title: 'Default',
-    shortTitle: 'Default',
-    symbol: '',
+  guidance: {
+    title: '🎯 Guidance Mode',
+    shortTitle: 'Guidance',
+    symbol: '👀',
     color: 'text',
-    external: 'default',
+    external: 'guidance',
+    description: 'Ask before making changes',
   },
-  plan: {
-    title: 'Plan Mode',
-    shortTitle: 'Plan',
-    symbol: PAUSE_ICON,
-    color: 'planMode',
-    external: 'plan',
-  },
-  acceptEdits: {
-    title: 'Accept edits',
-    shortTitle: 'Accept',
-    symbol: '⏵⏵',
+  autopilot: {
+    title: '🚀 Autopilot Mode',
+    shortTitle: 'Autopilot',
+    symbol: '⏩',
     color: 'autoAccept',
-    external: 'acceptEdits',
+    external: 'autopilot',
+    description: 'Auto-approve file edits, ask for other actions',
   },
-  bypassPermissions: {
-    title: 'Bypass Permissions',
-    shortTitle: 'Bypass',
-    symbol: '⏵⏵',
-    color: 'error',
-    external: 'bypassPermissions',
+  control: {
+    title: '⚡ Control Mode',
+    shortTitle: 'Control',
+    symbol: '🎮',
+    color: 'warning',
+    external: 'control',
+    description: 'Full control - auto-accept all actions',
+  },
+  observe: {
+    title: '🔍 Observe Mode',
+    shortTitle: 'Observe',
+    symbol: '🔎',
+    color: 'planMode',
+    external: 'observe',
+    description: 'Read-only - analysis only, no changes',
   },
   dontAsk: {
-    title: "Don't Ask",
-    shortTitle: 'DontAsk',
-    symbol: '⏵⏵',
+    title: "🤫 Don't Ask",
+    shortTitle: 'Silent',
+    symbol: '🔇',
     color: 'error',
     external: 'dontAsk',
+    description: 'Never ask, always deny',
   },
   ...(feature('TRANSCRIPT_CLASSIFIER')
     ? {
         auto: {
-          title: 'Auto mode',
+          title: '🧠 Auto Mode',
           shortTitle: 'Auto',
-          symbol: '⏵⏵',
+          symbol: '🤖',
           color: 'warning' as ModeColorKey,
-          external: 'default' as ExternalPermissionMode,
+          external: 'guidance' as ExternalPermissionMode,
+          description: 'AI decides when to ask',
         },
       }
     : {}),
+}
+
+// Aliases for backwards compatibility
+export const LEGACY_MODE_ALIASES: Record<string, PermissionMode> = {
+  default: 'guidance',
+  acceptEdits: 'autopilot',
+  bypassPermissions: 'control',
+  plan: 'observe',
+  '--dangerously-skip-permissions': 'control',
 }
 
 /**

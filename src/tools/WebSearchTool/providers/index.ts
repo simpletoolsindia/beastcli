@@ -28,6 +28,7 @@ import type { ProviderOutput } from './types.js'
 
 import { customProvider } from './custom.js'
 import { duckduckgoProvider } from './duckduckgo.js'
+import { searxngProvider } from './searxng.js'
 import { firecrawlProvider } from './firecrawl.js'
 import { tavilyProvider } from './tavily.js'
 import { exaProvider } from './exa.js'
@@ -44,13 +45,14 @@ export { extractHits } from './custom.js'
 // ---------------------------------------------------------------------------
 // All registered providers — order matters for auto mode
 // ---------------------------------------------------------------------------
-// Priority: firecrawl → tavily → exa → you → jina → bing → mojeek → linkup → ddg
+// Priority: searxng → firecrawl → tavily → exa → you → jina → bing → mojeek → linkup → ddg
+// SearxNG is first because it's self-hosted and reliable.
 // DDG is last because it's free but rate-limited.
 // NOTE: customProvider is intentionally excluded from the auto chain.
 //       It is only available when WEB_SEARCH_PROVIDER=custom is explicitly set.
-//       This prevents the generic outbound provider from silently becoming the default backend.
 
 const ALL_PROVIDERS: SearchProvider[] = [
+  searxngProvider,
   firecrawlProvider,
   tavilyProvider,
   exaProvider,
@@ -73,6 +75,7 @@ export function getAvailableProviders(): SearchProvider[] {
 export type ProviderMode =
   | 'auto'
   | 'custom'
+  | 'searxng'
   | 'firecrawl'
   | 'ddg'
   | 'tavily'
@@ -86,6 +89,7 @@ export type ProviderMode =
 
 const PROVIDER_BY_NAME: Record<string, SearchProvider> = {
   custom: customProvider,
+  searxng: searxngProvider,
   firecrawl: firecrawlProvider,
   ddg: duckduckgoProvider,
   tavily: tavilyProvider,

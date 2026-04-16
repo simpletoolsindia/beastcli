@@ -256,7 +256,23 @@ function SpinnerWithVerbInner({
   const tipsEnabled = settings.spinnerTipsEnabled !== false;
   const showClearTip = tipsEnabled && elapsedSnapshot > 1_800_000;
   const showBtwTip = tipsEnabled && elapsedSnapshot > 30_000 && !getGlobalConfig().btwUseCount;
-  const effectiveTip = contextTipsActive ? undefined : showClearTip && !nextTask ? 'Use /clear to start fresh when switching topics and free up context' : showBtwTip && !nextTask ? "Use /btw to ask a quick side question without interrupting Claude's current work" : spinnerTip;
+
+  // Fun, casual tips with emojis
+  const casualTips = [
+    'Ctrl+S to switch modes! 🕹️',
+    'Ollama = free local AI 🦙',
+    'NVIDIA NIM = GPU speed ⚡',
+    'OpenRouter = 200+ models 🎯',
+    'Use /clear to start fresh 🍃',
+    'Shift+Tab cycles modes 🔄',
+    'Type /mcp for connectors 🔌',
+    'Ctrl+C cancels anytime 🚫',
+    'Running local? Ollama is great! 💻',
+    'Web search ready! 🔍',
+  ];
+  const randomTip = casualTips[Math.floor(Math.random() * casualTips.length)];
+
+  const effectiveTip = contextTipsActive ? undefined : showClearTip && !nextTask ? '🍃 Use /clear to start fresh!' : showBtwTip && !nextTask ? '💬 Use /btw for quick side questions' : spinnerTip ?? randomTip;
 
   // Budget text (internal-only) — shown above the tip line
   let budgetText: string | null = null;

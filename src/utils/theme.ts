@@ -4,7 +4,9 @@ import { env } from './env.js'
 export type Theme = {
   autoAccept: string
   bashBorder: string
-  claude: string
+  beastcli: string  // BeastCLI orange - primary brand color
+  beastcliShimmer: string // Lighter version of beastcli color for shimmer effect
+  claude: string   // Kept for backwards compatibility
   claudeShimmer: string // Lighter version of claude color for shimmer effect
   claudeBlue_FOR_SYSTEM_SPINNER: string
   claudeBlueShimmer_FOR_SYSTEM_SPINNER: string
@@ -28,6 +30,10 @@ export type Theme = {
   warning: string
   merged: string
   warningShimmer: string // Lighter version of warning color for shimmer effect
+  // Dragula-inspired brand colors
+  beastcliOrange: string  // Primary: #FF6B35
+  beastcliTeal: string     // Secondary: #4ECDC4
+  beastcliYellow: string   // Accent: #FFE66D
   // Diff colors
   diffAdded: string
   diffRemoved: string
@@ -115,7 +121,12 @@ export type ThemeSetting = (typeof THEME_SETTINGS)[number]
 const lightTheme: Theme = {
   autoAccept: 'rgb(135,0,255)', // Electric violet
   bashBorder: 'rgb(255,0,135)', // Vibrant pink
-  claude: 'rgb(215,119,87)', // Claude orange
+  beastcli: 'rgb(255,107,53)', // BeastCLI orange
+  beastcliShimmer: 'rgb(255,157,103)', // Lighter beastcli orange for shimmer effect
+  beastcliOrange: 'rgb(255,107,53)', // Primary: #FF6B35
+  beastcliTeal: 'rgb(78,205,196)', // Secondary: #4ECDC4
+  beastcliYellow: 'rgb(255,230,109)', // Accent: #FFE66D
+  claude: 'rgb(215,119,87)', // Claude orange (alias for backwards compat)
   claudeShimmer: 'rgb(245,149,117)', // Lighter claude orange for shimmer effect
   claudeBlue_FOR_SYSTEM_SPINNER: 'rgb(87,105,247)', // Medium blue for system spinner
   claudeBlueShimmer_FOR_SYSTEM_SPINNER: 'rgb(117,135,255)', // Lighter blue for system spinner shimmer
@@ -197,6 +208,11 @@ const lightTheme: Theme = {
 const lightAnsiTheme: Theme = {
   autoAccept: 'ansi:magenta',
   bashBorder: 'ansi:magenta',
+  beastcli: 'ansi:redBright',
+  beastcliShimmer: 'ansi:yellowBright',
+  beastcliOrange: 'ansi:redBright',
+  beastcliTeal: 'ansi:cyan',
+  beastcliYellow: 'ansi:yellowBright',
   claude: 'ansi:redBright',
   claudeShimmer: 'ansi:yellowBright',
   claudeBlue_FOR_SYSTEM_SPINNER: 'ansi:blue',
@@ -278,6 +294,11 @@ const lightAnsiTheme: Theme = {
 const darkAnsiTheme: Theme = {
   autoAccept: 'ansi:magentaBright',
   bashBorder: 'ansi:magentaBright',
+  beastcli: 'ansi:redBright',
+  beastcliShimmer: 'ansi:yellowBright',
+  beastcliOrange: 'ansi:redBright',
+  beastcliTeal: 'ansi:cyan',
+  beastcliYellow: 'ansi:yellowBright',
   claude: 'ansi:redBright',
   claudeShimmer: 'ansi:yellowBright',
   claudeBlue_FOR_SYSTEM_SPINNER: 'ansi:blueBright',
@@ -440,7 +461,12 @@ const lightDaltonizedTheme: Theme = {
 const darkTheme: Theme = {
   autoAccept: 'rgb(175,135,255)', // Electric violet
   bashBorder: 'rgb(253,93,177)', // Bright pink
-  claude: 'rgb(215,119,87)', // Claude orange
+  beastcli: 'rgb(255,107,53)', // BeastCLI orange
+  beastcliShimmer: 'rgb(255,157,103)', // Lighter beastcli orange for shimmer
+  beastcliOrange: 'rgb(255,107,53)', // Primary: #FF6B35
+  beastcliTeal: 'rgb(78,205,196)', // Secondary: #4ECDC4
+  beastcliYellow: 'rgb(255,230,109)', // Accent: #FFE66D
+  claude: 'rgb(215,119,87)', // Claude orange (alias for backwards compat)
   claudeShimmer: 'rgb(235,159,127)', // Lighter claude orange for shimmer effect
   claudeBlue_FOR_SYSTEM_SPINNER: 'rgb(147,165,255)', // Blue for system spinner
   claudeBlueShimmer_FOR_SYSTEM_SPINNER: 'rgb(177,195,255)', // Lighter blue for system spinner shimmer

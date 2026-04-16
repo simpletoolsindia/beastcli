@@ -29,52 +29,50 @@ function canCycleToAuto(ctx: ToolPermissionContext): boolean {
 }
 
 /**
- * Determines the next permission mode when cycling through modes with Shift+Tab.
+ * Determines the next permission mode when cycling with Ctrl+S or Shift+Tab.
+ * Cycle order: guidance → autopilot → observe → control → (auto) → guidance
  */
 export function getNextPermissionMode(
   toolPermissionContext: ToolPermissionContext,
   _teamContext?: { leadAgentId: string },
 ): PermissionMode {
   switch (toolPermissionContext.mode) {
-    case 'default':
-      // Ants skip acceptEdits and plan — auto mode replaces them
-      if (process.env.USER_TYPE === 'ant') {
-        if (toolPermissionContext.isBypassPermissionsModeAvailable) {
-          return 'bypassPermissions'
-        }
-        if (canCycleToAuto(toolPermissionContext)) {
-          return 'auto'
-        }
-        return 'default'
-      }
-      return 'acceptEdits'
+    case 'guidance':
+      // Guidance → Autopilot (auto-approve edits)
+      return 'autopilot'
 
-    case 'acceptEdits':
-      return 'plan'
+    case 'autopilot':
+      // Autopilot → Observe (read-only mode)
+      return 'observe'
 
-    case 'plan':
+    case 'observe':
+      // Observe → Control (full power)
       if (toolPermissionContext.isBypassPermissionsModeAvailable) {
-        return 'bypassPermissions'
+        return 'control'
       }
       if (canCycleToAuto(toolPermissionContext)) {
         return 'auto'
       }
-      return 'default'
+      return 'guidance'
 
-    case 'bypassPermissions':
+    case 'control':
+      // Control → Auto (AI decides) or back to Guidance
       if (canCycleToAuto(toolPermissionContext)) {
         return 'auto'
       }
-      return 'default'
+      return 'guidance'
+
+    case 'auto':
+      // Auto → back to Guidance
+      return 'guidance'
 
     case 'dontAsk':
-      // Not exposed in UI cycle yet, but return default if somehow reached
-      return 'default'
-
+      // Silent mode → back to Guidance
+      return 'guidance'
 
     default:
-      // Covers auto (when TRANSCRIPT_CLASSIFIER is enabled) and any future modes — always fall back to default
-      return 'default'
+      // For any legacy modes or unknown modes, go to Guidance
+      return 'guidance'
   }
 }
 
