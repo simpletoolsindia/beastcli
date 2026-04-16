@@ -79,7 +79,7 @@ export function getAttributionTexts(): AttributionTexts {
   const coAuthorDomain =
     getAPIProvider() === 'firstParty' ? 'anthropic.com' : 'beastcli.dev'
   const defaultCommit = isEnvTruthy(
-    process.env.OPENCLAUDE_DISABLE_CO_AUTHORED_BY,
+    process.env.BEASTCLI_DISABLE_CO_AUTHORED_BY,
   )
     ? ''
     : `Co-Authored-By: ${modelName} <noreply@${coAuthorDomain}>`

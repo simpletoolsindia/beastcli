@@ -32,7 +32,7 @@ describe('BeastCLI paths', () => {
     expect(
       resolveClaudeConfigHomeDir({
         homeDir: homedir(),
-        openClaudeExists: true,
+        beastcliExists: true,
         legacyClaudeExists: false,
       }),
     ).toBe(join(homedir(), '.beastcli'))
@@ -45,7 +45,7 @@ describe('BeastCLI paths', () => {
     expect(
       resolveClaudeConfigHomeDir({
         homeDir: homedir(),
-        openClaudeExists: false,
+        beastcliExists: false,
         legacyClaudeExists: true,
       }),
     ).toBe(join(homedir(), '.claude'))
