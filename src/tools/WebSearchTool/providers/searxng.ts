@@ -5,7 +5,8 @@
  * https://github.com/searxng/searxng
  */
 
-import { safeHostname, extractHits, type SearchProvider, type ProviderOutput } from './types.js'
+import { safeHostname, type SearchProvider, type ProviderOutput } from './types.js'
+import { extractHits } from './custom.js'
 
 // Default SearxNG instance URL - can be overridden via WEB_SEARCH_API env var
 const DEFAULT_SEARXNG_URL = process.env.SEARXNG_URL || process.env.WEB_SEARCH_API || 'https://search.sridharhomelab.in'
