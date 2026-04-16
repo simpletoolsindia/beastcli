@@ -17,9 +17,9 @@ import { lazySchema } from '../lazySchema.js'
  * These names are allowed ONLY for official marketplaces and blocked for third parties.
  */
 export const ALLOWED_OFFICIAL_MARKETPLACE_NAMES = new Set([
-  'claude-code-marketplace',
+  'beastcli-marketplace',
   'claude-code-plugins',
-  'claude-plugins-official',
+  'beastcli-plugins-official',
   'anthropic-marketplace',
   'anthropic-plugins',
   'agent-skills',

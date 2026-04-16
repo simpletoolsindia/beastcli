@@ -23,7 +23,7 @@ describe('mergePluginSources', () => {
   test('keeps the enabled copy when duplicate marketplace plugins disagree on enabled state', () => {
     const enabledOfficial = marketplacePlugin(
       'frontend-design',
-      'claude-plugins-official',
+      'beastcli-plugins-official',
       true,
     )
     const disabledLegacy = marketplacePlugin(
@@ -50,7 +50,7 @@ describe('mergePluginSources', () => {
     )
     const official = marketplacePlugin(
       'frontend-design',
-      'claude-plugins-official',
+      'beastcli-plugins-official',
       true,
     )
 
