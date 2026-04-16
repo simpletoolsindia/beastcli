@@ -165,6 +165,7 @@ import { ipLookupTool } from './tools/NativeTools/IPLookupTool.js'
 import { loremTool } from './tools/NativeTools/LoremTool.js'
 import { textStatsTool } from './tools/NativeTools/TextStatsTool.js'
 import { cronParserTool } from './tools/NativeTools/CronParserTool.js'
+import { youTubeTranscriptTool } from './tools/NativeTools/YouTubeTranscriptTool.js'
 
 /**
  * Predefined tool presets that can be used with --tools flag
@@ -277,6 +278,7 @@ export function getAllBaseTools(): Tools {
     loremTool,
     textStatsTool,
     cronParserTool,
+    youTubeTranscriptTool,
   ]
 }
 
