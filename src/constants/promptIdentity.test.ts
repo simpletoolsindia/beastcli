@@ -25,58 +25,58 @@ afterEach(() => {
   process.env.CLAUDE_CODE_SIMPLE = originalSimpleEnv
 })
 
-test('CLI identity prefixes describe BeastCLI instead of Claude Code', () => {
+test('CLI identity prefixes describe BeastCLI instead of BeastCLI', () => {
   expect(getCLISyspromptPrefix()).toContain('BeastCLI')
-  expect(getCLISyspromptPrefix()).not.toContain('Claude Code')
+  expect(getCLISyspromptPrefix()).not.toContain('BeastCLI')
   expect(getCLISyspromptPrefix()).not.toContain("Anthropic's official CLI for Claude")
 
   for (const prefix of CLI_SYSPROMPT_PREFIXES) {
     expect(prefix).toContain('BeastCLI')
-    expect(prefix).not.toContain('Claude Code')
+    expect(prefix).not.toContain('BeastCLI')
     expect(prefix).not.toContain("Anthropic's official CLI for Claude")
   }
 })
 
-test('simple mode identity describes BeastCLI instead of Claude Code', async () => {
+test('simple mode identity describes BeastCLI instead of BeastCLI', async () => {
   process.env.CLAUDE_CODE_SIMPLE = '1'
 
   const prompt = await getSystemPrompt([], 'gpt-4o')
 
   expect(prompt[0]).toContain('BeastCLI')
-  expect(prompt[0]).not.toContain('Claude Code')
+  expect(prompt[0]).not.toContain('BeastCLI')
   expect(prompt[0]).not.toContain("Anthropic's official CLI for Claude")
 })
 
-test('built-in agent prompts describe BeastCLI instead of Claude Code', () => {
+test('built-in agent prompts describe BeastCLI instead of BeastCLI', () => {
   expect(DEFAULT_AGENT_PROMPT).toContain('BeastCLI')
-  expect(DEFAULT_AGENT_PROMPT).not.toContain('Claude Code')
+  expect(DEFAULT_AGENT_PROMPT).not.toContain('BeastCLI')
   expect(DEFAULT_AGENT_PROMPT).not.toContain("Anthropic's official CLI for Claude")
 
   const generalPrompt = GENERAL_PURPOSE_AGENT.getSystemPrompt({
     toolUseContext: { options: {} as never },
   })
   expect(generalPrompt).toContain('BeastCLI')
-  expect(generalPrompt).not.toContain('Claude Code')
+  expect(generalPrompt).not.toContain('BeastCLI')
   expect(generalPrompt).not.toContain("Anthropic's official CLI for Claude")
 
   const explorePrompt = EXPLORE_AGENT.getSystemPrompt({
     toolUseContext: { options: {} as never },
   })
   expect(explorePrompt).toContain('BeastCLI')
-  expect(explorePrompt).not.toContain('Claude Code')
+  expect(explorePrompt).not.toContain('BeastCLI')
   expect(explorePrompt).not.toContain("Anthropic's official CLI for Claude")
 
   const planPrompt = PLAN_AGENT.getSystemPrompt({
     toolUseContext: { options: {} as never },
   })
   expect(planPrompt).toContain('BeastCLI')
-  expect(planPrompt).not.toContain('Claude Code')
+  expect(planPrompt).not.toContain('BeastCLI')
 
   const statuslinePrompt = STATUSLINE_SETUP_AGENT.getSystemPrompt({
     toolUseContext: { options: {} as never },
   })
   expect(statuslinePrompt).toContain('BeastCLI')
-  expect(statuslinePrompt).not.toContain('Claude Code')
+  expect(statuslinePrompt).not.toContain('BeastCLI')
 
   const guidePrompt = CLAUDE_CODE_GUIDE_AGENT.getSystemPrompt({
     toolUseContext: {
@@ -91,5 +91,5 @@ test('built-in agent prompts describe BeastCLI instead of Claude Code', () => {
   expect(guidePrompt).toContain('You are the BeastCLI guide agent.')
   expect(guidePrompt).toContain('**BeastCLI** (the CLI tool)')
   expect(guidePrompt).not.toContain('You are the Claude guide agent.')
-  expect(guidePrompt).not.toContain('**Claude Code** (the CLI tool)')
+  expect(guidePrompt).not.toContain('**BeastCLI** (the CLI tool)')
 })

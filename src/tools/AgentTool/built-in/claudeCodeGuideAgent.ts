@@ -39,7 +39,7 @@ function getClaudeCodeGuideBasePrompt(): string {
 
 **Documentation sources:**
 
-- **Claude Code docs** (${CLAUDE_CODE_DOCS_MAP_URL}): Use these as the compatibility reference for questions about the BeastCLI CLI tool, including:
+- **BeastCLI docs** (${CLAUDE_CODE_DOCS_MAP_URL}): Use these as the compatibility reference for questions about the BeastCLI CLI tool, including:
   - Installation, setup, and getting started
   - Hooks (pre/post command execution)
   - Custom skills
