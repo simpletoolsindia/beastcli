@@ -144,6 +144,17 @@ const getPowerShellTool = () => {
 }
 /* eslint-enable @typescript-eslint/no-require-imports */
 
+// Native tools - free, no API key required
+import { calculatorTool } from './tools/NativeTools/CalculatorTool.js'
+import { jsonFormatterTool } from './tools/NativeTools/JsonFormatterTool.js'
+import { colorConverterTool } from './tools/NativeTools/ColorConverterTool.js'
+import { base64Tool } from './tools/NativeTools/Base64Tool.js'
+import { uuidTool } from './tools/NativeTools/UUIDTool.js'
+import { timestampTool } from './tools/NativeTools/TimestampTool.js'
+import { urlTool } from './tools/NativeTools/URLTool.js'
+import { hashTool } from './tools/NativeTools/HashTool.js'
+import { textDiffTool } from './tools/NativeTools/TextDiffTool.js'
+
 /**
  * Predefined tool presets that can be used with --tools flag
  */
@@ -234,6 +245,16 @@ export function getAllBaseTools(): Tools {
     // Include ToolSearchTool when tool search might be enabled (optimistic check)
     // The actual decision to defer tools happens at request time in claude.ts
     ...(isToolSearchEnabledOptimistic() ? [ToolSearchTool] : []),
+    // Native tools - free, no API key required
+    calculatorTool,
+    jsonFormatterTool,
+    colorConverterTool,
+    base64Tool,
+    uuidTool,
+    timestampTool,
+    urlTool,
+    hashTool,
+    textDiffTool,
   ]
 }
 
