@@ -5,41 +5,42 @@
  * https://github.com/searxng/searxng
  */
 
-import { safeHostname, type SearchProvider, type ProviderOutput } from './types.js'
+import type { SearchInput, SearchProvider } from './types.js'
+import { applyDomainFilters, safeHostname } from './types.js'
 import { extractHits } from './custom.js'
 
-// Default SearxNG instance URL - can be overridden via WEB_SEARCH_API env var
+// Default SearxNG instance URL - can be overridden via SEARXNG_URL or WEB_SEARCH_API env var
 const DEFAULT_SEARXNG_URL = process.env.SEARXNG_URL || process.env.WEB_SEARCH_API || 'https://search.sridharhomelab.in'
 
 export const searxngProvider: SearchProvider = {
   name: 'searxng',
 
-  isAvailable(): boolean {
-    // SearxNG is always "available" - it will fail at runtime if URL is unreachable
+  isConfigured(): boolean {
+    // SearxNG is always "configured" - it will fail at runtime if URL is unreachable
     // Users can set SEARXNG_URL or WEB_SEARCH_API to point to their instance
     return true
   },
 
-  async search(input: { query: string }): Promise<ProviderOutput> {
-    const { query } = input
+  async search(input: SearchInput, signal?: AbortSignal): Promise<{ hits: any[]; providerName: string; durationSeconds: number }> {
+    const start = performance.now()
     const baseUrl = DEFAULT_SEARXNG_URL.replace(/\/$/, '')
 
     // Try the SearxNG public API endpoint
-    const searchUrl = `${baseUrl}/search?q=${encodeURIComponent(query)}&format=json&engines=general`
+    const searchUrl = `${baseUrl}/search?q=${encodeURIComponent(input.query)}&format=json&engines=general`
 
     let response: Response
     try {
       response = await fetch(searchUrl, {
-        signal: AbortSignal.timeout(15_000),
+        signal: signal || AbortSignal.timeout(15_000),
         headers: {
           'Accept': 'application/json',
         },
       })
     } catch (error) {
-      // Try alternative SearxNG endpoint format
-      const altUrl = `${baseUrl}/search?q=${encodeURIComponent(query)}`
+      // Try alternative SearxNG endpoint format as fallback
+      const altUrl = `${baseUrl}/search?q=${encodeURIComponent(input.query)}`
       response = await fetch(altUrl, {
-        signal: AbortSignal.timeout(15_000),
+        signal: signal || AbortSignal.timeout(15_000),
       })
     }
 
@@ -55,36 +56,26 @@ export const searxngProvider: SearchProvider = {
     }
 
     if (!data.results || !Array.isArray(data.results)) {
-      // If JSON parse failed, try to extract from HTML fallback
+      // If JSON parse failed, return empty results
       return {
-        query,
         hits: [],
-        provider: 'searxng',
+        providerName: 'searxng',
+        durationSeconds: (performance.now() - start) / 1000,
       }
     }
 
-    const hits = extractHits(data.results.map(result => ({
+    const rawHits = data.results.map(result => ({
       title: result.title || '',
       url: result.url || '',
-      snippet: result.content || '',
-    })))
+      description: result.content || '',
+    }))
+
+    const hits = applyDomainFilters(rawHits, input)
 
     return {
-      query,
       hits,
-      provider: 'searxng',
+      providerName: 'searxng',
+      durationSeconds: (performance.now() - start) / 1000,
     }
   },
-}
-
-// Auto-detect SearxNG by checking if WEB_SEARCH_API points to a SearxNG instance
-export function detectSearxngProvider(webSearchApi?: string): SearchProvider | null {
-  const url = webSearchApi || DEFAULT_SEARXNG_URL
-
-  // Check if URL looks like a SearxNG instance
-  if (url.includes('searx') || url.includes('search')) {
-    return searxngProvider
-  }
-
-  return null
 }
