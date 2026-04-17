@@ -2,73 +2,175 @@ import { c as _c } from "react-compiler-runtime";
 import * as React from 'react';
 import { Box, Text } from '../../ink.js';
 import { env } from '../../utils/env.js';
-export type ClawdPose = 'default' | 'arms-up' // both arms raised (used during jump)
-| 'look-left' // both pupils shifted left
-| 'look-right'; // both pupils shifted right
+
+/**
+ * Beast mascot pose types
+ */
+export type ClawdPose = 'default' | 'howl' | 'hunt' | 'sleep' | 'fierce'
+| 'look-left' | 'look-right' | 'party' | 'sparkle'
+| 'cool' | 'star' | 'rocket' | 'ninja' | 'vibing'
 
 type Props = {
   pose?: ClawdPose;
 };
 
-// Standard-terminal pose fragments. Each row is split into segments so we can
-// vary only the parts that change (eyes, arms) while keeping the body/bg spans
-// stable. All poses end up 9 cols wide.
-//
-// arms-up: the row-2 arm shapes (▝▜ / ▛▘) move to row 1 as their
-// bottom-heavy mirrors (▗▟ / ▙▖) — same silhouette, one row higher.
-//
-// look-* use top-quadrant eye chars (▙/▟) so both eyes change from the
-// default (▛/▜, bottom pupils) — otherwise only one eye would appear to move.
+// ASCII art segments for beast/wolf mascot - each pose has distinct character
 type Segments = {
-  /** row 1 left (no bg): optional raised arm + side */
-  r1L: string;
-  /** row 1 eyes (with bg): left-eye, forehead, right-eye */
-  r1E: string;
-  /** row 1 right (no bg): side + optional raised arm */
-  r1R: string;
-  /** row 2 left (no bg): arm + body curve */
-  r2L: string;
-  /** row 2 right (no bg): body curve + arm */
-  r2R: string;
+  r1L: string;  // Row 1 left - ear/head shape
+  r1E: string;  // Row 1 eyes
+  r1R: string;  // Row 1 right - ear/head shape
+  r2L: string;  // Row 2 left - body/legs
+  r2M: string;  // Row 2 middle - chest/body
+  r2R: string;  // Row 2 right - body/legs
+  r3: string;   // Row 3 - tail/ground decoration
 };
+
+// Beast poses - wolf character with different moods
 const POSES: Record<ClawdPose, Segments> = {
   default: {
-    r1L: ' ╭',
-    r1E: '◌ ◌ ',
-    r1R: '╮',
-    r2L: ' ┆',
-    r2R: '┆ '
+    r1L: '  /\\',
+    r1E: ' ◉◉ ',
+    r1R: '/\\  ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
+  },
+  howl: {
+    r1L: '  /\\',
+    r1E: ' ◉◉',
+    r1R: '/\\‾',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
+  },
+  hunt: {
+    r1L: '  ◢',
+    r1E: ' ◉◉',
+    r1R: '◣ ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
+  },
+  sleep: {
+    r1L: '   ',
+    r1E: ' ◡◡ ',
+    r1R: '   ',
+    r2L: '  ╭',
+    r2M: '──╯',
+    r2R: '╰─',
+    r3: '~ ~ '
+  },
+  fierce: {
+    r1L: '  /\\',
+    r1E: ' ▲▲ ',
+    r1R: '/\\  ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
   },
   'look-left': {
-    r1L: ' ╭',
-    r1E: '◔ ◌ ',
-    r1R: '╮',
-    r2L: ' ┆',
-    r2R: '┆ '
+    r1L: '  /\\',
+    r1E: ' ◐◉ ',
+    r1R: '/\\  ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
   },
   'look-right': {
-    r1L: ' ╭',
-    r1E: '◌ ◔ ',
-    r1R: '╮',
-    r2L: ' ┆',
-    r2R: '┆ '
+    r1L: '  /\\',
+    r1E: ' ◉◐ ',
+    r1R: '/\\  ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
   },
-  'arms-up': {
-    r1L: '\\╭',
-    r1E: '◌ ◌ ',
-    r1R: '╮/',
-    r2L: ' ┆',
-    r2R: '┆ '
+  party: {
+    r1L: '  /\\',
+    r1E: ' ★★ ',
+    r1R: '/\\  ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
+  },
+  sparkle: {
+    r1L: ' ✦/\\',
+    r1E: ' ◉◉ ',
+    r1R: '/\\✦ ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
+  },
+  cool: {
+    r1L: '  /\\',
+    r1E: ' ◉_',
+    r1R: '_◉ ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
+  },
+  star: {
+    r1L: '  /\\',
+    r1E: ' ★★ ',
+    r1R: '/\\  ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '★/w\\★'
+  },
+  rocket: {
+    r1L: '  /\\',
+    r1E: ' ◉◉',
+    r1R: '/\\🔥',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
+  },
+  ninja: {
+    r1L: '  /‾',
+    r1E: ' ◉◉',
+    r1R: '‾\\  ',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '‾/w\\‾'
+  },
+  vibing: {
+    r1L: '  /\\',
+    r1E: ' ◉◉',
+    r1R: '/\\~',
+    r2L: ' /█\\',
+    r2M: '███',
+    r2R: '/█\\',
+    r3: '~/w\\~'
   }
 };
 
-// Apple Terminal uses a bg-fill trick (see below), so only eye poses make
-// sense. Arm poses fall back to default.
+// Apple Terminal simplified eyes
 const APPLE_EYES: Record<ClawdPose, string> = {
-  default: ' ◌ ◌  ',
-  'look-left': ' ◔ ◌  ',
-  'look-right': ' ◌ ◔  ',
-  'arms-up': ' ◌ ◌  '
+  default: ' ◉◉ ',
+  howl: ' ◉◉‾',
+  hunt: ' ◉◉',
+  sleep: ' ◡◡ ',
+  fierce: ' ▲▲ ',
+  'look-left': ' ◐◉ ',
+  'look-right': ' ◉◐ ',
+  party: ' ★★ ',
+  sparkle: ' ◉◉ ',
+  cool: ' ◉_',
+  star: ' ★★ ',
+  rocket: ' ◉◉',
+  ninja: ' ◉◉',
+  vibing: ' ◉◉',
 };
 export function Clawd(t0) {
   const $ = _c(26);
@@ -96,9 +198,10 @@ export function Clawd(t0) {
     return t3;
   }
   const p = POSES[pose];
+  // Row 1 - head with ears
   let t3;
   if ($[4] !== p.r1L) {
-    t3 = <Text color="text">{p.r1L}</Text>;
+    t3 = <Text color="beastcli">{p.r1L}</Text>;
     $[4] = p.r1L;
     $[5] = t3;
   } else {
@@ -106,7 +209,7 @@ export function Clawd(t0) {
   }
   let t4;
   if ($[6] !== p.r1E) {
-    t4 = <Text color="text">{p.r1E}</Text>;
+    t4 = <Text color="beastcli">{p.r1E}</Text>;
     $[6] = p.r1E;
     $[7] = t4;
   } else {
@@ -114,7 +217,7 @@ export function Clawd(t0) {
   }
   let t5;
   if ($[8] !== p.r1R) {
-    t5 = <Text color="text">{p.r1R}</Text>;
+    t5 = <Text color="beastcli">{p.r1R}</Text>;
     $[8] = p.r1R;
     $[9] = t5;
   } else {
@@ -130,53 +233,59 @@ export function Clawd(t0) {
   } else {
     t6 = $[13];
   }
+  // Row 2 - body with legs
   let t7;
   if ($[14] !== p.r2L) {
-    t7 = <Text color="text">{p.r2L}</Text>;
+    t7 = <Text color="beastcli">{p.r2L}</Text>;
     $[14] = p.r2L;
     $[15] = t7;
   } else {
     t7 = $[15];
   }
   let t8;
-  if ($[16] === Symbol.for("react.memo_cache_sentinel")) {
-    t8 = <Text color="text"> OC  </Text>;
-    $[16] = t8;
+  if ($[16] !== p.r2M) {
+    t8 = <Text color="beastcli" bold={true}>{p.r2M}</Text>;
+    $[16] = p.r2M;
+    $[17] = t8;
   } else {
-    t8 = $[16];
+    t8 = $[17];
   }
   let t9;
   if ($[17] !== p.r2R) {
-    t9 = <Text color="text">{p.r2R}</Text>;
+    t9 = <Text color="beastcli">{p.r2R}</Text>;
     $[17] = p.r2R;
     $[18] = t9;
   } else {
     t9 = $[18];
   }
   let t10;
-  if ($[19] !== t7 || $[20] !== t9) {
+  if ($[19] !== t7 || $[20] !== t8 || $[21] !== t9) {
     t10 = <Text>{t7}{t8}{t9}</Text>;
     $[19] = t7;
-    $[20] = t9;
-    $[21] = t10;
+    $[20] = t8;
+    $[21] = t9;
+    $[22] = t10;
   } else {
-    t10 = $[21];
+    t10 = $[22];
   }
+  // Row 3 - tail decoration
   let t11;
-  if ($[22] === Symbol.for("react.memo_cache_sentinel")) {
-    t11 = <Text color="inactive">{"  "}╰─◠─╯{" "}</Text>;
-    $[22] = t11;
+  if ($[23] !== p.r3) {
+    t11 = <Text color="beastcli" dimColor={true}>{p.r3}</Text>;
+    $[23] = p.r3;
+    $[24] = t11;
   } else {
-    t11 = $[22];
+    t11 = $[24];
   }
   let t12;
-  if ($[23] !== t10 || $[24] !== t6) {
+  if ($[25] !== t6 || $[26] !== t10 || $[27] !== t11) {
     t12 = <Box flexDirection="column">{t6}{t10}{t11}</Box>;
-    $[23] = t10;
-    $[24] = t6;
-    $[25] = t12;
+    $[25] = t6;
+    $[26] = t10;
+    $[27] = t11;
+    $[28] = t12;
   } else {
-    t12 = $[25];
+    t12 = $[28];
   }
   return t12;
 }

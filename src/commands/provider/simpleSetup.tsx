@@ -39,14 +39,17 @@ export async function simpleSetup(
           4. OpenAI 🤖 (GPT-4)
         </Text>
         <Text dimColor={true}>
-          5. View current config
+          5. ChatGPT Plus/Pro 🔥 (OAuth — browser sign-in)
+        </Text>
+        <Text dimColor={true}>
+          6. View current config
         </Text>
       </Box>
       <Text dimColor={true}>
         {'─'.repeat(50)}
       </Text>
       <Text marginTop={1}>
-        Usage: /provider setup [nvidia|openrouter|ollama|openai|status]
+        Usage: /provider setup [nvidia|openrouter|ollama|openai|chatgpt|status]
       </Text>
     </Box>
   )
@@ -64,13 +67,15 @@ export async function handleSimpleSetup(
       return setupOllama()
     case 'openai':
       return setupOpenAI()
+    case 'chatgpt':
+      return setupChatGPT()
     case 'status':
       return showStatus()
     default:
       return {
         success: false,
         message:
-          'Unknown provider. Use: nvidia, openrouter, ollama, openai, or status',
+          'Unknown provider. Use: nvidia, openrouter, ollama, openai, chatgpt, or status',
       }
   }
 }
@@ -283,6 +288,25 @@ Restart BeastCLI to use the new provider.
   }
 }
 
+async function setupChatGPT(): Promise<{ success: boolean; message: string }> {
+  return {
+    success: false,
+    message: `
+🔥 ChatGPT Plus/Pro OAuth Setup
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Use the interactive /provider command instead:
+
+  /provider
+
+Then select "Codex OAuth" from the provider list.
+BeastCLI will open your browser to sign in with ChatGPT.
+
+No API key needed — just your ChatGPT Plus/Pro subscription!
+Tokens are stored securely for future sessions.
+`,
+  }
+}
+
 async function showStatus(): Promise<{ success: boolean; message: string }> {
   const toolSearch = process.env.ENABLE_TOOL_SEARCH
   const nvidiaKey = process.env.NVIDIA_API_KEY ? '✓ Set' : '✗ Not set'
@@ -310,6 +334,7 @@ Quick Commands:
   /provider setup openrouter - Configure OpenRouter
   /provider setup ollama     - Configure Ollama
   /provider setup openai     - Configure OpenAI
+  /provider setup chatgpt    - ChatGPT Plus/Pro OAuth (interactive)
   /provider setup status     - Show this status
 `,
   }

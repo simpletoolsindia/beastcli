@@ -183,7 +183,7 @@ export default class App extends PureComponent<Props, State> {
   }
   override componentDidMount() {
     // In accessibility mode, keep the native cursor visible for screen magnifiers and other tools
-    if (this.props.stdout.isTTY && !isEnvTruthy(process.env.CLAUDE_CODE_ACCESSIBILITY)) {
+    if (this.props.stdout.isTTY && !isEnvTruthy(process.env.BEAST_CODE_ACCESSIBILITY) && !isEnvTruthy(process.env.CLAUDE_CODE_ACCESSIBILITY)) {
       this.props.stdout.write(HIDE_CURSOR);
     }
   }

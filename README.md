@@ -105,6 +105,18 @@ export OPENAI_MODEL=gpt-4o
 beastcli
 ```
 
+### ChatGPT Plus/Pro (OAuth — No API Key!)
+
+```bash
+beastcli
+/provider
+# Choose "Codex OAuth" from the provider list
+```
+
+BeastCLI will open your browser for ChatGPT sign-in. After auth, your ChatGPT Plus/Pro subscription powers BeastCLI — **no API key needed**. Tokens are stored securely for future sessions.
+
+> **Requirements:** Active ChatGPT Plus or Pro subscription. BeastCLI uses browser-based OAuth via `https://auth.openai.com`. Callback runs on port 1455.
+
 ---
 
 ## 🏗️ Provider Configuration
@@ -120,7 +132,7 @@ BeastCLI supports **7 providers** with a guided interactive setup:
 The `/provider` wizard shows:
 - **Current provider** and model in use
 - **Saved profile** name
-- Choice of: **Auto** (detects Ollama or guides OpenAI setup), **Ollama**, **OpenAI-compatible**, **Gemini**, **Mistral**, **Codex**, **Codex OAuth**, or **Clear saved profile**
+- Choice of: **Auto**, **Ollama**, **OpenAI-compatible**, **Gemini**, **Mistral**, **Codex**, **Codex OAuth** (ChatGPT Plus/Pro), or **Clear saved profile**
 
 ### Using /provider setup (Quick CLI)
 
@@ -129,6 +141,7 @@ The `/provider` wizard shows:
 /provider setup openrouter # Configure OpenRouter (200+ models)
 /provider setup ollama     # Configure Ollama (local, free)
 /provider setup openai     # Configure OpenAI (GPT-4)
+/provider setup chatgpt    # ChatGPT Plus/Pro OAuth (interactive)
 /provider setup status     # View all provider key statuses
 ```
 
@@ -147,8 +160,8 @@ The `/provider` wizard shows:
 | `MISTRAL_API_KEY` | Mistral API key | `...` |
 | `MISTRAL_BASE_URL` | Mistral base URL | `https://api.mistral.ai/v1` |
 | `MISTRAL_MODEL` | Mistral model | `mistral-large-latest` |
-| `BEAST_PROVIDER` | Active provider name | `nvidia`, `ollama`, `openai` |
-| `BEAST_MODEL` | Model override | `nvidia/llama-3.3-nemotron-70b` |
+| `BEASTCLI_PROVIDER` | Active provider name | `nvidia`, `ollama`, `openai` |
+| `BEASTCLI_MODEL` | Model override | `nvidia/llama-3.3-nemotron-70b` |
 | `ENABLE_TOOL_SEARCH` | Enable tool deferral (reduces prompt size by ~6K tokens) | `true`, `auto`, `auto:N` |
 
 ### Switching Providers (Runtime)

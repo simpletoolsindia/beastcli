@@ -30,17 +30,20 @@ export function resolveClaudeConfigHomeDir(options?: {
   return beastcliDir.normalize('NFC')
 }
 
-// Memoized: 150+ callers, many on hot paths. Keyed off CLAUDE_CONFIG_DIR so
+// Memoized: 150+ callers, many on hot paths. Keyed off BEAST_CONFIG_DIR so
 // tests that change the env var get a fresh value without explicit cache.clear.
-export const getClaudeConfigHomeDir = memoize(
+export const getBeastConfigHomeDir = memoize(
   (): string => resolveClaudeConfigHomeDir({
-    configDirEnv: process.env.CLAUDE_CONFIG_DIR,
+    configDirEnv: process.env.BEAST_CONFIG_DIR || process.env.CLAUDE_CONFIG_DIR,
   }),
-  () => process.env.CLAUDE_CONFIG_DIR,
+  () => process.env.BEAST_CONFIG_DIR || process.env.CLAUDE_CONFIG_DIR,
 )
 
+// Backward-compatible alias
+export const getClaudeConfigHomeDir = getBeastConfigHomeDir
+
 export function getTeamsDir(): string {
-  return join(getClaudeConfigHomeDir(), 'teams')
+  return join(getBeastConfigHomeDir(), 'teams')
 }
 
 /**
@@ -73,18 +76,19 @@ export function isEnvDefinedFalsy(
 }
 
 /**
- * --bare / CLAUDE_CODE_SIMPLE — skip hooks, LSP, plugin sync, skill dir-walk,
+ * --bare / BEAST_SIMPLE — skip hooks, LSP, plugin sync, skill dir-walk,
  * attribution, background prefetches, and ALL keychain/credential reads.
  * Auth is strictly ANTHROPIC_API_KEY env or apiKeyHelper from --settings.
  * Explicit CLI flags (--plugin-dir, --add-dir, --mcp-config) still honored.
  * ~30 gates across the codebase.
  *
  * Checks argv directly (in addition to the env var) because several gates
- * run before main.tsx's action handler sets CLAUDE_CODE_SIMPLE=1 from --bare
+ * run before main.tsx's action handler sets BEAST_SIMPLE=1 from --bare
  * — notably startKeychainPrefetch() at main.tsx top-level.
  */
 export function isBareMode(): boolean {
   return (
+    isEnvTruthy(process.env.BEAST_SIMPLE) ||
     isEnvTruthy(process.env.CLAUDE_CODE_SIMPLE) ||
     process.argv.includes('--bare')
   )
@@ -132,10 +136,10 @@ export function getDefaultVertexRegion(): string {
 
 /**
  * Check if bash commands should maintain project working directory (reset to original after each command)
- * @returns true if CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR is set to a truthy value
+ * @returns true if BEAST_BASH_MAINTAIN_PROJECT_WORKING_DIR is set to a truthy value
  */
 export function shouldMaintainProjectWorkingDir(): boolean {
-  return isEnvTruthy(process.env.CLAUDE_BASH_MAINTAIN_PROJECT_WORKING_DIR)
+  return isEnvTruthy(process.env.BEAST_BASH_MAINTAIN_PROJECT_WORKING_DIR)
 }
 
 /**
