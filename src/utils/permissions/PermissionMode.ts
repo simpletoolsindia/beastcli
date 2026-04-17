@@ -120,7 +120,7 @@ export function isExternalPermissionMode(
 }
 
 function getModeConfig(mode: PermissionMode): PermissionModeConfig {
-  return PERMISSION_MODE_CONFIG[mode] ?? PERMISSION_MODE_CONFIG.default!
+  return PERMISSION_MODE_CONFIG[mode] ?? PERMISSION_MODE_CONFIG.guidance!
 }
 
 export function toExternalPermissionMode(
