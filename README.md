@@ -3,7 +3,7 @@
 **The Ultimate AI-Powered Coding Agent — Built for Gen-Z Developers**
 
 <p align="center">
-  <img src="https://img.shields.io/badge/NPM-v1.0.8-FF6B35?style=for-the-badge&logo=npm" alt="NPM Version">
+  <img src="https://img.shields.io/badge/NPM-v1.1.0-FF6B35?style=for-the-badge&logo=npm" alt="NPM Version">
   <img src="https://img.shields.io/badge/Node-20+-339933?style=for-the-badge&logo=node.js" alt="Node Version">
   <img src="https://img.shields.io/badge/TypeScript-5.9-3178C6?style=for-the-badge&logo=typescript" alt="TypeScript">
   <img src="https://img.shields.io/badge/License-MIT-4ECDC4?style=for-the-badge" alt="License">
@@ -52,12 +52,22 @@ To change providers later:
 ### 2. Quick CLI Setup
 
 ```bash
+# Interactive setup (recommended)
 /provider setup nvidia       # NVIDIA NIM — fast GPU inference
 /provider setup openrouter   # OpenRouter — 200+ models
 /provider setup ollama       # Ollama — local, free, offline
 /provider setup openai       # OpenAI — GPT-4/5
 /provider setup chatgpt      # ChatGPT Plus/Pro OAuth — browser sign-in
 /provider setup status       # View current config
+
+# One-liner CLI flags (no interactive prompt)
+/provider setup openrouter --key sk-or-v1-...   # OpenRouter with API key
+```
+
+Or use `--provider` flag with environment variable:
+
+```bash
+OPENROUTER_API_KEY=sk-or-v1-... beastcli --provider openrouter --model google/gemma-4-31b-it:free
 ```
 
 ---

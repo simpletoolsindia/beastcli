@@ -412,6 +412,87 @@ export const SeverityNumber = {};
           { filter: /.*/, namespace: 'missing-module-stub' },
           (args) => {
             const names = missingModuleExports.get(args.path) ?? new Set()
+            // Special case: envUtils.js needs proper implementations from the actual TS source
+            if (args.path.endsWith('envUtils.js') || args.path.includes('envUtils')) {
+              return {
+                contents: `
+// envUtils stub - re-implements src/utils/envUtils.ts for bundler compatibility
+import { join } from 'path';
+import { homedir } from 'os';
+import { existsSync } from 'fs';
+
+function resolveClaudeConfigHomeDir2(options) {
+  if (options && options.configDirEnv) return options.configDirEnv.normalize("NFC");
+  const homeDir = (options && options.homeDir) || homedir();
+  const beastcliDir = join(homeDir, ".beastcli");
+  const legacyClaudeDir = join(homeDir, ".claude");
+  const beastcliExists = (options && options.beastcliExists) ?? existsSync(beastcliDir);
+  const legacyClaudeExists = (options && options.legacyClaudeExists) ?? existsSync(legacyClaudeDir);
+  if (!beastcliExists && legacyClaudeExists) return legacyClaudeDir.normalize("NFC");
+  return beastcliDir.normalize("NFC");
+}
+
+function isEnvTruthy2(envVar) {
+  if (!envVar) return false;
+  if (typeof envVar === 'boolean') return envVar;
+  return ['1', 'true', 'yes', 'on'].includes(String(envVar).toLowerCase().trim());
+}
+
+function isEnvDefinedFalsy2(envVar) {
+  if (envVar === undefined) return false;
+  if (typeof envVar === 'boolean') return !envVar;
+  if (!envVar) return false;
+  return ['0', 'false', 'no', 'off'].includes(String(envVar).toLowerCase().trim());
+}
+
+function isBareMode2() {
+  return isEnvTruthy2(process.env.BEAST_SIMPLE) || isEnvTruthy2(process.env.CLAUDE_CODE_SIMPLE) || process.argv.includes('--bare');
+}
+
+function getTeamsDir2() { return join(resolveClaudeConfigHomeDir2({}), "teams"); }
+function getAWSRegion2() { return process.env.AWS_REGION || process.env.AWS_DEFAULT_REGION || "us-east-1"; }
+function getDefaultVertexRegion2() { return process.env.CLOUD_ML_REGION || "us-east5"; }
+function shouldMaintainProjectWorkingDir2() { return isEnvTruthy2(process.env.BEAST_BASH_MAINTAIN_PROJECT_WORKING_DIR); }
+function isRunningOnHomespace2() { return process.env.USER_TYPE === 'ant' && isEnvTruthy2(process.env.COO_RUNNING_ON_HOMESPACE); }
+function isInProtectedNamespace2() { if (process.env.USER_TYPE === 'ant') return false; return false; }
+function hasNodeOption2(flag) { const nodeOptions = process.env.NODE_OPTIONS; if (!nodeOptions) return false; return nodeOptions.split(/\\s+/).includes(flag); }
+function parseEnvVars2(rawEnvArgs) { const parsedEnv = {}; if (rawEnvArgs) { for (const envStr of rawEnvArgs) { const [key, ...valueParts] = envStr.split("="); if (!key || valueParts.length === 0) throw new Error("Invalid env format: " + envStr); parsedEnv[key] = valueParts.join("="); } } return parsedEnv; }
+
+function getVertexRegionForModel2(model) {
+  const OVERRIDES = [["claude-haiku-4-5","VERTEX_REGION_CLAUDE_HAIKU_4_5"],["claude-3-5-haiku","VERTEX_REGION_CLAUDE_3_5_HAIKU"],["claude-3-5-sonnet","VERTEX_REGION_CLAUDE_3_5_SONNET"],["claude-3-7-sonnet","VERTEX_REGION_CLAUDE_3_7_SONNET"],["claude-opus-4-1","VERTEX_REGION_CLAUDE_4_1_OPUS"],["claude-opus-4","VERTEX_REGION_CLAUDE_4_0_OPUS"],["claude-sonnet-4-6","VERTEX_REGION_CLAUDE_4_6_SONNET"],["claude-sonnet-4-5","VERTEX_REGION_CLAUDE_4_5_SONNET"],["claude-sonnet-4","VERTEX_REGION_CLAUDE_4_0_SONNET"]];
+  if (model) { const match = OVERRIDES.find(([prefix]) => model.startsWith(prefix)); if (match) return process.env[match[1]] || getDefaultVertexRegion2(); }
+  return getDefaultVertexRegion2();
+}
+
+function getBeastConfigHomeDir2() { return resolveClaudeConfigHomeDir2({ configDirEnv: process.env.BEAST_CONFIG_DIR || process.env.CLAUDE_CONFIG_DIR }); }
+function getClaudeConfigHomeDir2() { return getBeastConfigHomeDir2(); }
+
+export {
+  getBeastConfigHomeDir2 as getBeastConfigHomeDir,
+  getClaudeConfigHomeDir2 as getClaudeConfigHomeDir,
+  getTeamsDir2 as getTeamsDir,
+  hasNodeOption2 as hasNodeOption,
+  isEnvTruthy2 as isEnvTruthy,
+  isEnvTruthy2,
+  isEnvDefinedFalsy2 as isEnvDefinedFalsy,
+  isEnvDefinedFalsy2,
+  isBareMode2 as isBareMode,
+  isBareMode2,
+  parseEnvVars2 as parseEnvVars,
+  getAWSRegion2 as getAWSRegion,
+  getAWSRegion2,
+  getDefaultVertexRegion2 as getDefaultVertexRegion,
+  shouldMaintainProjectWorkingDir2 as shouldMaintainProjectWorkingDir,
+  isRunningOnHomespace2 as isRunningOnHomespace,
+  isInProtectedNamespace2 as isInProtectedNamespace,
+  getVertexRegionForModel2 as getVertexRegionForModel,
+  resolveClaudeConfigHomeDir2 as resolveClaudeConfigHomeDir,
+};
+export default null;
+`,
+                loader: 'js',
+              }
+            }
             const exports = [...names].map(n => `export const ${n} = noop;`).join('\n')
             return {
               contents: `
