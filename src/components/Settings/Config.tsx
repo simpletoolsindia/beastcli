@@ -282,8 +282,34 @@ export function Config({
       });
     }
   }, {
+    id: 'toolSearchEnabled',
+    label: 'Tool Search (saves ~6K tokens)',
+    value: globalConfig.toolSearchEnabled ?? false,
+    type: 'boolean' as const,
+    onChange(toolSearchEnabled: boolean) {
+      // Persist to global config
+      saveGlobalConfig(current_0 => ({
+        ...current_0,
+        toolSearchEnabled
+      }));
+      setGlobalConfig({
+        ...getGlobalConfig(),
+        toolSearchEnabled
+      });
+      // Also set env var for real-time effect
+      if (toolSearchEnabled) {
+        process.env.ENABLE_TOOL_SEARCH = 'true'
+      } else {
+        delete process.env.ENABLE_TOOL_SEARCH
+      }
+      logEvent('tengu_tool_search_setting_changed', {
+        enabled: toolSearchEnabled
+      });
+    }
+  }, {
     id: 'spinnerTipsEnabled',
     label: 'Show tips',
+    searchText: 'spinner tips startup tips rotating hints',
     value: settingsData?.spinnerTipsEnabled ?? true,
     type: 'boolean' as const,
     onChange(spinnerTipsEnabled: boolean) {

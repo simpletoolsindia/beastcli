@@ -242,6 +242,7 @@ export type GlobalConfig = {
   bypassPermissionsModeAccepted?: boolean
   hasUsedBackslashReturn?: boolean
   autoCompactEnabled: boolean // Controls whether auto-compact is enabled
+  toolSearchEnabled?: boolean // Controls whether Tool Search is enabled (saves ~6K tokens per request)
   showTurnDuration: boolean // Controls whether to show turn duration message (e.g., "Cooked for 1m 6s")
   /**
    * @deprecated Use settings.env instead.

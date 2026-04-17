@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 /**
  * BeastCLI — AI Coding Agent with NVIDIA NIM & OpenRouter Support
  *
