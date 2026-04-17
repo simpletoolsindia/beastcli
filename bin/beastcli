@@ -6,53 +6,12 @@
  * Otherwise, tell the user to build first or use `bun run dev`.
  */
 
-import { existsSync, readFileSync } from 'fs'
+import { existsSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath, pathToFileURL } from 'url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const distPath = join(__dirname, '..', 'dist', 'cli.mjs')
-
-function hasAnyApiKey(): boolean {
-  return !!(
-    process.env.ANTHROPIC_API_KEY ||
-    process.env.OPENAI_API_KEY ||
-    process.env.NVIDIA_API_KEY ||
-    process.env.BEASTCLI_PROVIDER === 'ollama'
-  )
-}
-
-function showNoProviderMessage() {
-  console.log(`
-╔════════════════════════════════════════════════════════════╗
-║  BeastCLI — No AI Provider Configured                    ║
-╠════════════════════════════════════════════════════════════╣
-║                                                            ║
-║  BeastCLI needs an AI provider to work. Set one of:       ║
-║                                                            ║
-║  • Ollama (free, local):                                  ║
-║    BEASTCLI_PROVIDER=ollama OPENAI_BASE_URL=http://...     ║
-║    ollama pull qwen2.5-coder:7b                          ║
-║                                                            ║
-║  • OpenRouter (free models):                             ║
-║    OPENAI_API_KEY=sk-or-v1-...                            ║
-║    OPENAI_BASE_URL=https://openrouter.ai/api/v1            ║
-║    OPENAI_MODEL=google/gemma-3-4b-it                     ║
-║                                                            ║
-║  • NVIDIA NIM (GPU):                                     ║
-║    NVIDIA_API_KEY=nvapi-...                              ║
-║    OPENAI_BASE_URL=https://integrate.api.nvidia.com/v1     ║
-║                                                            ║
-║  Or run: /provider  to set up interactively             ║
-║                                                            ║
-╚════════════════════════════════════════════════════════════╝
-`)
-}
-
-if (!hasAnyApiKey()) {
-  showNoProviderMessage()
-  process.exit(1)
-}
 
 if (existsSync(distPath)) {
   await import(pathToFileURL(distPath).href)
