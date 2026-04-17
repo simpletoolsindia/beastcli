@@ -38,6 +38,14 @@ export const DEFAULT_MISTRAL_BASE_URL = 'https://api.mistral.ai/v1'
 export const DEFAULT_MISTRAL_MODEL = 'devstral-latest'
 
 const PROFILE_ENV_KEYS = [
+  'BEASTCLI_PROVIDER',
+  'BEASTCLI_USE_OPENAI',
+  'BEASTCLI_USE_GEMINI',
+  'BEASTCLI_USE_MISTRAL',
+  'BEASTCLI_USE_BEDROCK',
+  'BEASTCLI_USE_VERTEX',
+  'BEASTCLI_USE_FOUNDRY',
+  // Backward-compat: also save CLAUDE_CODE_USE_* so existing configs still work
   'CLAUDE_CODE_USE_OPENAI',
   'CLAUDE_CODE_USE_GEMINI',
   'CLAUDE_CODE_USE_MISTRAL',
@@ -66,6 +74,7 @@ const PROFILE_ENV_KEYS = [
   'MISTRAL_BASE_URL',
   'MISTRAL_API_KEY',
   'MISTRAL_MODEL',
+  'ENABLE_TOOL_SEARCH',
 ] as const
 
 const SECRET_ENV_KEYS = [
@@ -81,6 +90,13 @@ const SECRET_ENV_KEYS = [
 export type ProviderProfile = 'openai' | 'ollama' | 'codex' | 'gemini' | 'atomic-chat' | 'nvidia-nim' | 'minimax' | 'mistral'
 
 export type ProfileEnv = {
+  BEASTCLI_PROVIDER?: string
+  BEASTCLI_USE_OPENAI?: string
+  BEASTCLI_USE_GEMINI?: string
+  BEASTCLI_USE_MISTRAL?: string
+  BEASTCLI_USE_BEDROCK?: string
+  BEASTCLI_USE_VERTEX?: string
+  BEASTCLI_USE_FOUNDRY?: string
   OPENAI_BASE_URL?: string
   OPENAI_MODEL?: string
   OPENAI_API_KEY?: string
@@ -101,6 +117,7 @@ export type ProfileEnv = {
   MISTRAL_BASE_URL?: string
   MISTRAL_API_KEY?: string
   MISTRAL_MODEL?: string
+  ENABLE_TOOL_SEARCH?: string
 }
 
 export type ProfileFile = {

@@ -12,39 +12,96 @@ export type APIProvider =
   | 'github'
   | 'codex'
   | 'nvidia-nim'
-  | 'minimax'
+  | ''
   | 'mistral'
 
+/**
+ * Mapping from BEASTCLI_PROVIDER=xxx names to internal providers.
+ * Provides a simple user-facing way to select providers.
+ */
+const BEASTCLI_PROVIDER_MAP: Record<string, APIProvider> = {
+  nvidia: 'nvidia-nim',
+  minmax: '',
+  openrouter: 'openai',
+  openai: 'openai',
+  ollama: 'openai',
+  gemini: 'gemini',
+  mistral: 'mistral',
+  github: 'github',
+  bedrock: 'bedrock',
+  vertex: 'vertex',
+  foundry: 'foundry',
+  anthropic: 'firstParty',
+  codex: 'codex',
+}
+
+/**
+ * Check if a provider is selected via the simple BEASTCLI_PROVIDER env var.
+ * Returns the provider name or null if not set.
+ */
+function getBeastCLIProviderFromSimpleEnv(): APIProvider | null {
+  const provider = process.env.BEASTCLI_PROVIDER
+  if (!provider) return null
+  const normalized = provider.toLowerCase().trim()
+  const mapped = BEASTCLI_PROVIDER_MAP[normalized]
+  if (mapped) return mapped
+  return null
+}
+
 export function getAPIProvider(): APIProvider {
+  // Priority 1: BEASTCLI_PROVIDER=nvidia|openai|gemini|ollama|mistral|...
+  const beastProvider = getBeastCLIProviderFromSimpleEnv()
+  if (beastProvider) return beastProvider
+
   if (isEnvTruthy(process.env.NVIDIA_NIM)) {
     return 'nvidia-nim'
   }
   if (isEnvTruthy(process.env.MINIMAX_API_KEY)) {
-    return 'minimax'
+    return ''
   }
-  return isEnvTruthy(process.env.CLAUDE_CODE_USE_GEMINI)
+
+  return isEnvTruthy(
+    process.env.BEASTCLI_USE_GEMINI ?? process.env.CLAUDE_CODE_USE_GEMINI,
+  )
     ? 'gemini'
-    :
-    isEnvTruthy(process.env.CLAUDE_CODE_USE_MISTRAL)
-    ? 'mistral'
-    : isEnvTruthy(process.env.CLAUDE_CODE_USE_GITHUB)
-      ? 'github'
-      : isEnvTruthy(process.env.CLAUDE_CODE_USE_OPENAI)
-        ? isCodexModel()
-          ? 'codex'
-          : 'openai'
-        : isEnvTruthy(process.env.CLAUDE_CODE_USE_BEDROCK)
-          ? 'bedrock'
-          : isEnvTruthy(process.env.CLAUDE_CODE_USE_VERTEX)
-            ? 'vertex'
-            : isEnvTruthy(process.env.CLAUDE_CODE_USE_FOUNDRY)
-              ? 'foundry'
-              : 'firstParty'
+    : isEnvTruthy(
+        process.env.BEASTCLI_USE_MISTRAL ?? process.env.CLAUDE_CODE_USE_MISTRAL,
+      )
+      ? 'mistral'
+      : isEnvTruthy(
+          process.env.BEASTCLI_USE_GITHUB ??
+            process.env.CLAUDE_CODE_USE_GITHUB,
+        )
+        ? 'github'
+        : isEnvTruthy(
+            process.env.BEASTCLI_USE_OPENAI ??
+              process.env.CLAUDE_CODE_USE_OPENAI,
+          )
+          ? isCodexModel()
+            ? 'codex'
+            : 'openai'
+          : isEnvTruthy(
+              process.env.BEASTCLI_USE_BEDROCK ??
+                process.env.CLAUDE_CODE_USE_BEDROCK,
+            )
+            ? 'bedrock'
+            : isEnvTruthy(
+                process.env.BEASTCLI_USE_VERTEX ??
+                  process.env.CLAUDE_CODE_USE_VERTEX,
+              )
+              ? 'vertex'
+              : isEnvTruthy(
+                  process.env.BEASTCLI_USE_FOUNDRY ??
+                    process.env.CLAUDE_CODE_USE_FOUNDRY,
+                )
+                ? 'foundry'
+                : 'firstParty'
 }
 
 export function usesAnthropicAccountFlow(): boolean {
   return getAPIProvider() === 'firstParty'
 }
+
 function isCodexModel(): boolean {
   return shouldUseCodexTransport(
     process.env.OPENAI_MODEL || '',
