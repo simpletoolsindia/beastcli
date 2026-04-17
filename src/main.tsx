@@ -90,7 +90,7 @@ import { filterCommandsForRemoteMode, getCommands } from './commands.js';
 import type { StatsStore } from './context/stats.js';
 import { launchAssistantInstallWizard, launchAssistantSessionChooser, launchInvalidSettingsDialog, launchResumeChooser, launchSnapshotUpdateDialog, launchTeleportRepoMismatchDialog, launchTeleportResumeWrapper } from './dialogLaunchers.js';
 import { SHOW_CURSOR } from './ink/termio/dec.js';
-import { exitWithError, exitWithMessage, getRenderContext, renderAndRun, showSetupScreens } from './interactiveHelpers.js';
+import { exitWithError, exitWithMessage, getRenderContext, renderAndRun, showSetupDialog, showSetupScreens } from './interactiveHelpers.js';
 import { initBuiltinPlugins } from './plugins/bundled/index.js';
 /* eslint-enable @typescript-eslint/no-require-imports */
 import { checkQuotaStatus } from './services/claudeAiLimits.js';
@@ -2232,6 +2232,15 @@ async function run(): Promise<CommanderCommand> {
       });
       const setupScreensStart = Date.now();
       const onboardingShown = await showSetupScreens(root, permissionMode, allowDangerouslySkipPermissions, commands, enableClaudeInChrome, devChannels);
+
+      // Auto-show provider setup if no API key is configured (first-run experience)
+      if (!isNonInteractiveSession) {
+        const hasApiKey = !!(process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY || process.env.NVIDIA_API_KEY || process.env.OPENROUTER_API_KEY || process.env.BEASTCLI_PROVIDER);
+        if (!hasApiKey) {
+          const { ProviderManager } = await import('./components/ProviderManager.js');
+          await showSetupDialog(root, done => <ProviderManager mode="first-run" onDone={() => { done(); }} />);
+        }
+      }
 
       // Now that trust is established and GrowthBook has auth headers,
       // resolve the --remote-control / --rc entitlement gate.
