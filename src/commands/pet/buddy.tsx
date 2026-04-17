@@ -91,7 +91,7 @@ function setCompanionReaction(
 
 function showHelp(onDone: LocalJSXCommandOnDone): void {
   onDone(
-    'Usage: /buddy [status|mute|unmute]\n\nRun /buddy with no args to hatch your companion the first time, then pet it on later runs.',
+    'Usage: /pet [status|mute|unmute]\n\nRun /buddy with no args to hatch your companion the first time, then pet it on later runs.',
     { display: 'system' },
   )
 }
@@ -121,7 +121,7 @@ export async function call(
   if (COMMON_INFO_ARGS.includes(arg) || arg === 'status') {
     const companion = getCompanion()
     if (!companion) {
-      onDone('No buddy hatched yet. Run /buddy to hatch one.', {
+      onDone('No pet hatched yet. Run /pet to hatch one.', {
         display: 'system',
       })
       return null

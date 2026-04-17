@@ -2,7 +2,7 @@ import type { Command } from '../../commands.js'
 
 const buddy = {
   type: 'local-jsx',
-  name: 'buddy',
+  name: 'pet',
   description: 'Hatch, pet, and manage your BeastCLI companion',
   immediate: true,
   argumentHint: '[status|mute|unmute|help]',

@@ -5,7 +5,6 @@ import backfillSessions from './commands/backfill-sessions/index.js'
 import btw from './commands/btw/index.js'
 import goodClaude from './commands/good-claude/index.js'
 import issue from './commands/issue/index.js'
-import feedback from './commands/feedback/index.js'
 import clear from './commands/clear/index.js'
 import color from './commands/color/index.js'
 import commit from './commands/commit.js'
@@ -15,7 +14,6 @@ import commitPushPr from './commands/commit-push-pr.js'
 import compact from './commands/compact/index.js'
 import config from './commands/config/index.js'
 import { context, contextNonInteractive } from './commands/context/index.js'
-import cost from './commands/cost/index.js'
 import diff from './commands/diff/index.js'
 import dream from './commands/dream/index.js'
 import ctx_viz from './commands/ctx_viz/index.js'
@@ -34,7 +32,6 @@ import installSlackApp from './commands/install-slack-app/index.js'
 import breakCache from './commands/break-cache/index.js'
 import cacheProbe from './commands/cache-probe/index.js'
 import mcp from './commands/mcp/index.js'
-import mobile from './commands/mobile/index.js'
 import onboarding from './commands/onboarding/index.js'
 import pr_comments from './commands/pr_comments/index.js'
 import releaseNotes from './commands/release-notes/index.js'
@@ -121,7 +118,7 @@ const forkCmd = feature('FORK_SUBAGENT')
   : null
 const buddy = isBuddyEnabled()
   ? (
-      require('./commands/buddy/index.js') as typeof import('./commands/buddy/index.js')
+      require('./commands/pet/index.js') as typeof import('./commands/pet/index.js')
     ).default
   : null
 /* eslint-enable @typescript-eslint/no-require-imports */
@@ -189,7 +186,6 @@ import {
   extraUsageNonInteractive,
 } from './commands/extra-usage/index.js'
 import rateLimitOptions from './commands/rate-limit-options/index.js'
-import statusline from './commands/statusline.js'
 import effort from './commands/effort/index.js'
 import stats from './commands/stats/index.js'
 // insights.ts is 113KB (3200 lines, includes diffLines/html rendering). Lazy
@@ -279,7 +275,6 @@ const COMMANDS = memoize((): Command[] => [
   desktop,
   context,
   contextNonInteractive,
-  cost,
   diff,
   dream,
   doctor,
@@ -312,11 +307,9 @@ const COMMANDS = memoize((): Command[] => [
   skills,
   stats,
   status,
-  statusline,
   stickers,
   tag,
   theme,
-  feedback,
   review,
   ultrareview,
   rewind,
@@ -637,16 +630,12 @@ export const REMOTE_SAFE_COMMANDS: Set<Command> = new Set([
   theme, // Change terminal theme
   color, // Change agent color
   vim, // Toggle vim mode
-  cost, // Show session cost (local cost tracking)
   usage, // Show usage info
   copy, // Copy last message
   btw, // Quick note
-  feedback, // Send feedback
   plan, // Plan mode toggle
   keybindings, // Keybinding management
-  statusline, // Status line toggle
   stickers, // Stickers
-  mobile, // Mobile QR code
 ])
 
 /**
@@ -665,7 +654,6 @@ export const BRIDGE_SAFE_COMMANDS: Set<Command> = new Set(
   [
     compact, // Shrink context — useful mid-session from a phone
     clear, // Wipe transcript
-    cost, // Show session cost
     summary, // Summarize conversation
     releaseNotes, // Show changelog
     files, // List tracked files
