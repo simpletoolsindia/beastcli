@@ -9,57 +9,36 @@ import { z } from 'zod'
 export const jsonFormatterTool = buildTool({
   shouldDefer: true,
   name: 'JsonFormatter',
-  description: 'Format, validate, or minify JSON. Useful for cleaning up messy JSON, validating structure, or compressing JSON for storage.',
+  description: 'Format, validate, or minify JSON.',
   input: z.object({
     json: z.string().describe('JSON string to format, validate, or minify'),
-    action: z.enum(['format', 'minify', 'validate', 'prettify']).optional().describe('Action: format (pretty print), minify (compress), validate (check only), prettify (with colors)'),
-    indent: z.number().optional().describe('Indentation size (default: 2 spaces)'),
+    action: z.enum(['format', 'minify', 'validate', 'prettify']).optional().describe('Action'),
+    indent: z.number().optional().describe('Indentation size (default: 2)'),
   }),
   output: z.object({
-    result: z.string().describe('Formatted/minified/validated JSON'),
-    valid: z.boolean().describe('Whether JSON is valid'),
-    error: z.string().optional().describe('Error message if invalid'),
+    result: z.string(), valid: z.boolean(), error: z.string().optional(),
   }),
-  aliases: ['json', 'format-json', 'json-format', 'prettify-json'],
-  rateLimit: {
-    windowMs: 1000,
-    maxUses: 50,
-  },
-})(
-  async ({ json, action = 'format', indent = 2 }) => {
+  aliases: ['json', 'format-json'],
+  rateLimit: { windowMs: 1000, maxUses: 50 },
+  async call({ json, action = 'format', indent = 2 }) {
     try {
-      // First validate by parsing
       const parsed = JSON.parse(json)
-
       switch (action) {
-        case 'minify':
-          return {
-            result: JSON.stringify(parsed),
-            valid: true,
-          }
-
-        case 'validate':
-          return {
-            result: 'Valid JSON ✓',
-            valid: true,
-          }
-
-        case 'prettify':
-        case 'format':
-        default:
-          return {
-            result: JSON.stringify(parsed, null, indent),
-            valid: true,
-          }
+        case 'minify': return { data: { result: JSON.stringify(parsed), valid: true } }
+        case 'validate': return { data: { result: 'Valid JSON', valid: true } }
+        default: return { data: { result: JSON.stringify(parsed, null, indent), valid: true } }
       }
     } catch (error: any) {
-      return {
-        result: '',
-        valid: false,
-        error: error.message,
-      }
+      return { data: { result: '', valid: false, error: error.message } }
     }
-  }
-)
+  },
+  mapToolResultToToolResultBlockParam(content, toolUseID) {
+    const { result, valid, error } = content as any
+    return {
+      tool_use_id: toolUseID, type: 'tool_result',
+      content: [{ type: 'text', text: error ? `Invalid JSON: ${error}` : result }],
+    }
+  },
+})
 
 export default jsonFormatterTool

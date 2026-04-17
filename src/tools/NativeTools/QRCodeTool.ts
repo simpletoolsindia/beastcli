@@ -12,7 +12,7 @@ export const qrCodeTool = buildTool({
   description: 'Generate QR codes for URLs, text, WiFi, contacts, and more. No API key required.',
   input: z.object({
     content: z.string().describe('Content to encode (URL, text, email, phone, WiFi config)'),
-    size: z.number().min(100).max.optional().describe('QR code size in pixels (100-1000). Default: 300'),
+    size: z.number().min(100).max().optional().describe('QR code size in pixels (100-1000). Default: 300'),
     format: z.enum(['svg', 'png', 'text']).optional().describe('Output format: svg, png (base64), or text (ASCII). Default: svg'),
     errorCorrection: z.enum(['L', 'M', 'Q', 'H']).optional().describe('Error correction level: L (7%), M (15%), Q (25%), H (30%). Default: M'),
   }),
